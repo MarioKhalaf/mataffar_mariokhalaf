@@ -7,31 +7,27 @@ class Customer {
     private String name;
     private List<Product> basket;
 
-    public Customer () {
-
-    }
     public Customer(String name) {
         this.name = name;
-        basket = new ArrayList<Product>();
+        basket = new ArrayList<>();
     }
 
-    public void addToBasket(Product product) {
-        basket.add(product);
+    public String getName() {
+        return name;
     }
 
-    public void removeProduct(Product product) {
-        basket.remove(product);
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public float getTotalBill() {
-        float total = 0;
-        for (Product product : basket) {
-            total += product.getTotalCost(1);
+    public List<Product> getBasket() {
+        return basket;
+    }
+
+    public void addToBasket(Product product, int quantity) {
+        for (int i = 0; i < quantity; i++) {
+            basket.add(product);
         }
-        return total;
     }
     
-    public void decreaseProductQuantity(Product product){
-        product.setQuantity(product.getQuantity()-1);
-    }
 }
