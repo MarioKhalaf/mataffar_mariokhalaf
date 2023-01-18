@@ -1,0 +1,19 @@
+{
+  "Product" : [ {
+    "name" : "Egg",
+    "price" : 5.0,
+    "quantity" : 5
+  }, {
+    "name" : "apples",
+    "price" : 30.0,
+    "quantity" : 5
+  }, {
+    "name" : "milk",
+    "price" : 20.0,
+    "quantity" : 50
+  }, {
+    "name" : "oranges",
+    "price" : 50.0,
+    "quantity" : 30
+  } ]
+}
