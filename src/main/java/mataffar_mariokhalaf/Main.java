@@ -1,5 +1,6 @@
 package mataffar_mariokhalaf;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -21,14 +22,7 @@ public class Main {
             switch (choice) {
                 case 1:
                     // Add products to json file
-                    System.out.println("Enter product name: ");
-                    String pName = input.next();
-                    System.out.println("Enter product price: ");
-                    float price = input.nextFloat();
-                    System.out.println("Enter product quantity: ");
-                    int quantity = input.nextInt();
-                    Product addProduct = new Product(pName, price, quantity);
-                    foodStore.addProductToInventory(addProduct);
+                    insertToJsonFile(foodStore, input);
                     break;
                 case 2:
                     // remove product from json file
@@ -40,29 +34,9 @@ public class Main {
                     // check out customer
                     break;
                 case 5:
-                    System.out.println("what is your name?");
+                    System.out.println("Enter your name: ");
                     String name = input.next();
-                    while (true) {
-                        foodStore.browseProducts();
-                        System.out.println("\nChoose the products you would like by entering its name: \n");
-                        String productName = input.next();
-                        try {
-                            Product chosenProduct = foodStore.getProductByName(productName);
-                            if(chosenProduct == null) {
-                                throw new IllegalArgumentException("Product not found in inventory");
-                            }
-                            System.out.println("Enter the quantity of the product you want to add to your basket: ");
-                            int amount = input.nextInt();
-                            foodStore.decreaseQuantity(chosenProduct, amount);
-                            Customer customer = new Customer(name);
-                            customer.addToBasket(chosenProduct, amount);
-                            System.out.println(chosenProduct + " added to basket your basket.");
-                            break;
-                        } catch (IllegalArgumentException e) {
-                            System.out.println(e.getMessage());
-                            break;
-                        }
-                    }
+                    groceryShopping(foodStore, input, name);
                 case 6:
                     break;
                 case 7:
@@ -73,5 +47,51 @@ public class Main {
             }
         }
     }
-}
+
+    private static void insertToJsonFile(FoodStore foodStore, Scanner input) {
+        System.out.println("Enter product name: ");
+        String pName = input.next();
+        System.out.println("Enter product price: ");
+        float price = input.nextFloat();
+        System.out.println("Enter product quantity: ");
+        int quantity = input.nextInt();
+        Product addProduct = new Product(pName, price, quantity);
+        foodStore.addProductToInventory(addProduct);
+    }
+
+    private static void groceryShopping(FoodStore foodStore, Scanner input, String name) {
+        while (true) {
+            List<Product> products = foodStore.browseProducts();
+            for (Product product : products) {
+                System.out.println(product.toString());
+            }
+            System.out.println("\nChoose the products you would like by entering its name: \n");
+            String productName = input.next().toLowerCase();
+            try {
+                Product chosenProduct = foodStore.getProductByName(productName);
+                if (chosenProduct == null) {
+                    throw new IllegalArgumentException("\nProduct not found in inventory\n");
+                }
+                System.out.println("\nEnter the quantity of the product you want to add to your basket: ");
+                int amount = input.nextInt();
+                if(chosenProduct.getQuantity() < amount) {
+                    throw new IllegalArgumentException("\nThe product is out of stock\n");
+                }
+                Customer customer = new Customer(name);
+                customer.addToBasket(chosenProduct, amount);
+                System.out.println(amount + " " + productName + " added to your basket.");
+                foodStore.decreaseQuantity(chosenProduct, amount);
+                foodStore.saveProductsToJson();
+                System.out.println("Do you want to continue shopping? Press Y to continue or any other key to exit:");
+                String continueShopping = input.next();
+                if(!continueShopping.equalsIgnoreCase("Y")) {
+                    break;
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                break;
+            }
+        }
+    }
+}   
 

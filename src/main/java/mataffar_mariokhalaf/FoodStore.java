@@ -57,10 +57,8 @@ class FoodStore {
         return products.size();
     }
 
-    public void browseProducts() {
-        for (Product product : products) {
-            System.out.println(product);
-        }
+    public  List<Product> browseProducts() {
+        return products;
     }
     
     public Product getProductByName(String name) {
@@ -96,3 +94,4 @@ class FoodStore {
         throw new IllegalArgumentException("Product not found in inventory");
     }
 }
+

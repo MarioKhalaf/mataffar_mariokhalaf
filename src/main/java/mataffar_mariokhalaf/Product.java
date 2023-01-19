@@ -6,13 +6,18 @@ class Product {
     private int quantity;
 
     public Product() {
-        
+
     }
 
     public Product(String name, float price, int quantity) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
+    }
+
+    @Override
+    public String toString() { // toString method so browseBasket() prints actual names and not object name
+        return name + " - Quantity: " + quantity + " - Price: " + price;
     }
 
     public String getName() {
