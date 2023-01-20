@@ -48,9 +48,20 @@ class FoodStore {
         saveProductsToJson();
     }
 
-    public void removeProductFromInventory(Product product) {
-        products.remove(product);
-        saveProductsToJson();
+    public void removeProductFromInventory(String productName) {
+        Product productToRemove = null;
+        for (Product product : products) {
+            if (product.getName().equals(productName)) {
+                productToRemove = product;
+                break;
+            }
+        }
+        if (productToRemove != null) {
+            products.remove(productToRemove);
+            saveProductsToJson();
+        } else {
+            System.out.println("Product not found in inventory.");
+        }
     }
 
     public int checkInventoryCount() {

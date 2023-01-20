@@ -1,5 +1,6 @@
 package mataffar_mariokhalaf;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -8,7 +9,6 @@ public class Main {
     public static void main(String[] args) {
         FoodStore foodStore = new FoodStore();
         Scanner input = new Scanner(System.in);
-        Product product = new Product();
 
         while (true) {
             System.out.println("1. Add product to inventory");
@@ -22,10 +22,11 @@ public class Main {
             switch (choice) {
                 case 1:
                     // Add products to json file
-                    insertToJsonFile(foodStore, input);
+                    insertProductToJsonFile(foodStore, input);
                     break;
                 case 2:
                     // remove product from json file
+                    deleteProductFromJsonFile(foodStore, input);
                     break;
                 case 3:
                     // --- something ---
@@ -34,6 +35,7 @@ public class Main {
                     System.out.println("Welcome to the Foodstore! What is your name?: ");
                     String name = input.next();
                     groceryShopping(foodStore, input, name);
+                    break;
                 case 5:
                     break;
                 case 6:
@@ -45,7 +47,7 @@ public class Main {
         }
     }
 
-    private static void insertToJsonFile(FoodStore foodStore, Scanner input) {
+    private static void insertProductToJsonFile(FoodStore foodStore, Scanner input) {
         System.out.println("Enter product name: ");
         String pName = input.next();
         System.out.println("Enter product price: ");
@@ -56,11 +58,18 @@ public class Main {
         foodStore.addProductToInventory(addProduct);
     }
 
+    private static void deleteProductFromJsonFile(FoodStore foodStore, Scanner input) {
+        System.out.println("Enter the name of the product you want to remove: ");
+        String productName = input.next();
+        foodStore.removeProductFromInventory(productName);
+        foodStore.saveProductsToJson();
+        System.out.println("Product removed from inventory.");
+    }
+
     private static void groceryShopping(FoodStore foodStore, Scanner input, String name) {
-        System.out.println("\nEnter Q to view your basket \n");
+        System.out.println("\nEnter Q once you're ready to checkout and view your basket.\n");
         while (true) {
             displayGroceries(foodStore);
-            try {
                 System.out.println("\nChoose the products you would like by entering its name:");
                 String option = input.next();
                 if (option.equalsIgnoreCase("q")) {
@@ -69,41 +78,42 @@ public class Main {
                 }
                 Product chosenProduct = foodStore.getProductByName(option);
                 if (chosenProduct == null) {
-                    throw new IllegalArgumentException("\nProduct not found in inventory\n");
+                    System.out.println("\nProduct not found in inventory\n");
+                    continue;
                 }
                 System.out.println("\nEnter the quantity of the product you want to add to your basket: ");
-                int amount = input.nextInt();
-                if (chosenProduct.getQuantity() < amount) {
-                    throw new IllegalArgumentException("\nThe product is out of stock\n");
+                try {
+                    int amount = input.nextInt();
+                    if (chosenProduct.getQuantity() < amount) {
+                        System.out.println("\nThe product is out of stock\n");
+                        continue;
+                    }
+                    foodStore.addToBasket(chosenProduct, amount);
+                    System.out.println("\n" + amount + " " + option + " added to your basket.");
+                    foodStore.decreaseInventoryQuantity(chosenProduct, amount);
+                    foodStore.saveProductsToJson();
+                } catch (InputMismatchException e) {
+                    System.out.println("\nInvalid input. Enter a valid amount");
+                    input.next();
                 }
-                foodStore.addToBasket(chosenProduct, amount);
-                System.out.println(amount + " " + option + " added to your basket.");
-                foodStore.decreaseInventoryQuantity(chosenProduct, amount);
-                foodStore.saveProductsToJson();
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                break;
-            }
         }
     }
 
     private static void displayGroceries(FoodStore foodStore) {
-        System.out.println("Product  | Amount | Price");
+        System.out.println("\nProduct  | Amount | Price");
         System.out.println("-------------------------");
         List<Product> products = foodStore.browseProducts();
-        for (Product p : products) {
-            System.out.println(p.getName() + p);
+        for (Product p : products) {    //prints out lines aligned with eachother
+            System.out.printf("%-8s | %-6d | %-8.2f\n", p.getName(), p.getQuantity(), p.getPrice());        }
         }
-    }
 
     private static void viewBasket(FoodStore foodStore, Scanner input) {
-        System.out.println("*** Your current basket ***\n");
+        System.out.println("\n*** Your current basket ***\n");
         System.out.println("Product  | Amount | Price");
         System.out.println("-------------------------"); // using entry method to iterate through map
-        Map<Product, Integer> customerBasket = foodStore.getBasket(); 
-        for (Map.Entry<Product, Integer> entry : customerBasket.entrySet()) {
-            System.out.println(entry.getKey().getName() + " |    " + entry.getValue()
-             + "   | $"+ entry.getKey().getPrice() * entry.getValue());
+        Map<Product, Integer> customerBasket = foodStore.getBasket();
+        for (Map.Entry<Product, Integer> entry : customerBasket.entrySet()) { //prints out lines aligned with eachother
+            System.out.printf("%-8s | %-6d | %-8.2f\n", entry.getKey().getName(), entry.getValue(), entry.getKey().getPrice() * entry.getValue());
         }
         double totalCost = foodStore.getTotalCost();
         System.out.println("\nYour total cost: $" + totalCost);
