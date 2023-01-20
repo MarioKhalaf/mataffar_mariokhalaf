@@ -17,7 +17,7 @@ class Product {
 
     @Override
     public String toString() { // toString method so browseBasket() prints actual names and not object name
-        return name + " - Quantity: " + quantity + " - Price: " + price;
+        return name + "     " + quantity + "     " + price;
     }
 
     public String getName() {

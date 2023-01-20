@@ -1,19 +1,43 @@
 {
   "Product" : [ {
-    "name" : "Egg",
+    "name" : "eggs",
     "price" : 5.0,
-    "quantity" : 5
+    "quantity" : 10
   }, {
     "name" : "apples",
     "price" : 30.0,
-    "quantity" : 5
+    "quantity" : 7
   }, {
     "name" : "milk",
     "price" : 20.0,
-    "quantity" : 50
+    "quantity" : 20
   }, {
     "name" : "oranges",
     "price" : 50.0,
-    "quantity" : 30
+    "quantity" : 18
+  }, {
+    "name" : "bananas",
+    "price" : 50.0,
+    "quantity" : 6
+  }, {
+    "name" : "pasta",
+    "price" : 40.0,
+    "quantity" : 25
+  }, {
+    "name" : "onionw",
+    "price" : 40.0,
+    "quantity" : 60
+  }, {
+    "name" : "potatoes",
+    "price" : 5.0,
+    "quantity" : 79
+  }, {
+    "name" : "sugar",
+    "price" : 15.0,
+    "quantity" : 4
+  }, {
+    "name" : "salt",
+    "price" : 5.0,
+    "quantity" : 26
   } ]
 }
