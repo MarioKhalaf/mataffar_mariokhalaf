@@ -1,6 +1,7 @@
 package mataffar_mariokhalaf;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -13,9 +14,8 @@ public class Main {
             System.out.println("1. Add product to inventory");
             System.out.println("2. Remove product from inventory");
             System.out.println("3. Check inventory count");
-            System.out.println("4. Check out customer");
-            System.out.println("5. List of all products in the food store.");
-            System.out.println("6. Exit");
+            System.out.println("4. Start shopping.");
+            System.out.println("5. Exit");
 
             int choice = input.nextInt();
 
@@ -31,15 +31,12 @@ public class Main {
                     // --- something ---
                     break;
                 case 4:
-                    // check out customer
-                    break;
-                case 5:
-                    System.out.println("Enter your name: ");
+                    System.out.println("Welcome to the Foodstore! What is your name?: ");
                     String name = input.next();
                     groceryShopping(foodStore, input, name);
-                case 6:
+                case 5:
                     break;
-                case 7:
+                case 6:
                     return;
                 default:
                     System.out.println("Invalid choice. Please try again.");
@@ -60,38 +57,63 @@ public class Main {
     }
 
     private static void groceryShopping(FoodStore foodStore, Scanner input, String name) {
+        System.out.println("\nEnter Q to view your basket \n");
         while (true) {
-            List<Product> products = foodStore.browseProducts();
-            for (Product product : products) {
-                System.out.println(product.toString());
-            }
-            System.out.println("\nChoose the products you would like by entering its name: \n");
-            String productName = input.next().toLowerCase();
+            displayGroceries(foodStore);
             try {
-                Product chosenProduct = foodStore.getProductByName(productName);
+                System.out.println("\nChoose the products you would like by entering its name:");
+                String option = input.next();
+                if (option.equalsIgnoreCase("q")) {
+                    viewBasket(foodStore, input);
+                    continue;
+                }
+                Product chosenProduct = foodStore.getProductByName(option);
                 if (chosenProduct == null) {
                     throw new IllegalArgumentException("\nProduct not found in inventory\n");
                 }
                 System.out.println("\nEnter the quantity of the product you want to add to your basket: ");
                 int amount = input.nextInt();
-                if(chosenProduct.getQuantity() < amount) {
+                if (chosenProduct.getQuantity() < amount) {
                     throw new IllegalArgumentException("\nThe product is out of stock\n");
                 }
-                Customer customer = new Customer(name);
-                customer.addToBasket(chosenProduct, amount);
-                System.out.println(amount + " " + productName + " added to your basket.");
-                foodStore.decreaseQuantity(chosenProduct, amount);
+                foodStore.addToBasket(chosenProduct, amount);
+                System.out.println(amount + " " + option + " added to your basket.");
+                foodStore.decreaseInventoryQuantity(chosenProduct, amount);
                 foodStore.saveProductsToJson();
-                System.out.println("Do you want to continue shopping? Press Y to continue or any other key to exit:");
-                String continueShopping = input.next();
-                if(!continueShopping.equalsIgnoreCase("Y")) {
-                    break;
-                }
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
                 break;
             }
         }
     }
-}   
 
+    private static void displayGroceries(FoodStore foodStore) {
+        System.out.println("Product  | Amount | Price");
+        System.out.println("-------------------------");
+        List<Product> products = foodStore.browseProducts();
+        for (Product p : products) {
+            System.out.println(p.getName() + p);
+        }
+    }
+
+    private static void viewBasket(FoodStore foodStore, Scanner input) {
+        System.out.println("*** Your current basket ***\n");
+        System.out.println("Product  | Amount | Price");
+        System.out.println("-------------------------"); // using entry method to iterate through map
+        Map<Product, Integer> customerBasket = foodStore.getBasket(); 
+        for (Map.Entry<Product, Integer> entry : customerBasket.entrySet()) {
+            System.out.println(entry.getKey().getName() + " |    " + entry.getValue()
+             + "   | $"+ entry.getKey().getPrice() * entry.getValue());
+        }
+        double totalCost = foodStore.getTotalCost();
+        System.out.println("\nYour total cost: $" + totalCost);
+        System.out.println("\n1. Go to checkout");
+        System.out.println("2. Continue shopping");
+        String choice = input.next().toLowerCase();
+        if (choice.equals("1")) {
+            // foodStore.checkOut();
+        } else if (choice.equals("2")) {
+            System.out.println("Continuing shopping...");
+        }
+    }
+}
