@@ -41,33 +41,29 @@ class Inventory {
         }
     }
 
-    public void addProductToInventory(Product product) {
-        products.add(product);
-        saveProductsToJson();
-    }
-
-    public void removeProductFromInventory(String productName) {
-        Product productToRemove = null;
-        for (Product product : products) {
-            if (product.getName().equals(productName)) {
-                productToRemove = product;
-                break;
+    public String addProductToInventory(Product product) {
+        for (Product p : products) {
+            if (product.equals(p)) {
+                return product.getName() + " is already in inventory.\n";
             }
         }
-        if (productToRemove != null) {
-            products.remove(productToRemove);
-            saveProductsToJson();
-        } else {
-            System.out.println("Product not found in inventory.");
+        products.add(product);
+        saveProductsToJson();
+        return product.getName() + " Has been added to inventory\n";
+    }
+    public String removeProductFromInventory(String productName) {
+        for (Product product : products) {
+            if (product.getName().equals(productName)) {
+                products.remove(product);
+                saveProductsToJson();
+                return productName + " Has been removed from inventory.\n";
+            }
         }
+        return "There is no " + productName + " in inventory.\n";
     }
 
     public  List<Product> browseProducts() {
         return products;
-    }
-
-    public int checkInventoryCount() {
-        return products.size();
     }
 
     public Product getProductByName(String name) {
@@ -91,5 +87,17 @@ class Inventory {
             }
         } // handles error if user inputs non existen product or
         throw new IllegalArgumentException("Product not found in inventory");
+    }
+
+    public String reStockInventory(String productName, int amount) {
+        for (Product product : products) {
+            if (product.getName().equals(productName)) {
+                int quantity = product.getQuantity();
+                product.setQuantity(quantity + amount);
+                return amount + " " + productName + " Has been refilled to the inventory. \nNew " + productName + " quantity: " + product.getQuantity() + "\n";
+            }
+        } 
+        return productName + " is not in inventory\n";
+
     }
 }
