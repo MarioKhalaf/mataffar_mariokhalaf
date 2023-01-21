@@ -1,119 +1,131 @@
 package mataffar_mariokhalaf;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Scanner;
 
-class FoodStore {
-    private File productsJson;
-    private List<Product> products;
-    private Map<Product, Integer> basket;
+public class FoodStore {
+    public static void main(String[] args) {
+        Inventory inventory = new Inventory();
+        Basket basket = new Basket();
+        Scanner input = new Scanner(System.in);
 
-    public FoodStore() {
-        products = new ArrayList<>();
-        basket = new HashMap<>();
-        productsJson = new File("target/products.json");
-        loadProductsFromJson();
-    }
+        while (true) {
+            System.out.println("1. Add product to inventory");
+            System.out.println("2. Remove product from inventory");
+            System.out.println("3. Check inventory count");
+            System.out.println("4. Start shopping.");
+            System.out.println("5. Exit");
 
-    public void loadProductsFromJson() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            Map<String, List<Product>> map = objectMapper.readValue(productsJson, 
-            new TypeReference<Map<String, List<Product>>>(){});
-            products = map.get("Product");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+            int choice = input.nextInt();
 
-    public void saveProductsToJson() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            Map<String, List<Product>> map = new HashMap<>();
-            map.put("Product", products);
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(productsJson, map);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void addProductToInventory(Product product) {
-        products.add(product);
-        saveProductsToJson();
-    }
-
-    public void removeProductFromInventory(String productName) {
-        Product productToRemove = null;
-        for (Product product : products) {
-            if (product.getName().equals(productName)) {
-                productToRemove = product;
-                break;
-            }
-        }
-        if (productToRemove != null) {
-            products.remove(productToRemove);
-            saveProductsToJson();
-        } else {
-            System.out.println("Product not found in inventory.");
-        }
-    }
-
-    public int checkInventoryCount() {
-        return products.size();
-    }
-
-    public  List<Product> browseProducts() {
-        return products;
-    }
-    
-    public Product getProductByName(String name) {
-        for(Product product : products) {
-            if(product.getName().equals(name)) {
-                return product;
-            }
-        }
-        return null;
-    }
-
-    public void addToBasket(Product product, int amount) {
-        if (basket.containsKey(product)) {
-            int quantity = basket.get(product);
-            basket.put(product, quantity + amount);
-        }else {
-            basket.put(product, amount);
-        }
-    }
-    
-    public Map<Product, Integer> getBasket() {
-        return basket;
-    }
-
-    public double getTotalCost() { // entry method to iterate through map for keys & values
-        double totalCost = 0;
-        for (Map.Entry<Product, Integer> entry : basket.entrySet()) {
-            totalCost += entry.getKey().getPrice() * entry.getValue(); 
-        }
-        return totalCost;
-    }
-
-    public void decreaseInventoryQuantity(Product product, int quantity) {
-        for (Product p : products) { 
-            if (p.getName().equals(product.getName())) { // compares product name to the one in json file
-                if (p.getQuantity() >= quantity) { // makes sures quantity in stock is more than asked amount
-                    p.setQuantity(p.getQuantity() - quantity); 
+            switch (choice) {
+                case 1:
+                    // Add products to json file
+                    insertProductToJsonFile(inventory, input);
+                    break;
+                case 2:
+                    // remove product from json file
+                    deleteProductFromJsonFile(inventory, input);
+                    break;
+                case 3:
+                    System.out.println(inventory.checkInventoryCount());
+                    break;
+                case 4:
+                    groceryShopping(inventory, basket, input);
+                    break;
+                case 5:
+                    break;
+                case 6:
                     return;
-                } else { // handles error user inputs amount more than available in stock
-                    throw new IllegalArgumentException("The product is out of stock");
-                }
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    break;
             }
-        } // handles error if user inputs non existen product or
-        throw new IllegalArgumentException("Product not found in inventory");
+        }
+    }
+
+    private static void insertProductToJsonFile(Inventory inventory, Scanner input) {
+        System.out.println("Enter product name: ");
+        String pName = input.next();
+        System.out.println("Enter product price: ");
+        float price = input.nextFloat();
+        System.out.println("Enter product quantity: ");
+        int quantity = input.nextInt();
+        Product addProduct = new Product(pName, price, quantity);
+        inventory.addProductToInventory(addProduct);
+        System.out.println(quantity + pName + " Has been added to the inventory.\n");
+    }
+
+    private static void deleteProductFromJsonFile(Inventory inventory, Scanner input) {
+        System.out.println("Enter the name of the product you want to remove: ");
+        String productName = input.next();
+        inventory.removeProductFromInventory(productName);
+        System.out.println(productName + " Has been removed from the inventory.\n");
+    }
+
+    private static void groceryShopping(Inventory inventory, Basket basket, Scanner input) {
+        System.out.println("\nEnter Q once you're ready to checkout and view your basket.\n");
+        while (true) {
+            displayGroceries(inventory);
+            System.out.println("\nChoose the products you would like by entering its name:");
+            String option = input.next();
+            if (option.equalsIgnoreCase("q")) {
+                if (viewBasket(basket, input)) {
+                    System.out.println("Checking out...");
+                    break;
+                } else continue;
+            }
+            Product chosenProduct = inventory.getProductByName(option);
+            if (chosenProduct == null) {
+                System.out.println("\nProduct not found in inventory\n");
+                continue;
+            }
+            System.out.println("\nEnter the quantity of the product you want to add to your basket: ");
+            try {
+                int amount = input.nextInt();
+                if (chosenProduct.getQuantity() < amount) {
+                    System.out.println("\nThe product is out of stock\n");
+                    continue;
+                }
+                basket.addToBasket(chosenProduct, amount);
+                System.out.println("\n" + amount + " " + option + " added to your basket.");
+                inventory.decreaseInventoryQuantity(chosenProduct, amount);
+                inventory.saveProductsToJson();
+            } catch (InputMismatchException e) {
+                System.out.println("\nInvalid input. Enter a valid amount");
+                input.next();
+            }
+        }
+    }
+
+    private static void displayGroceries(Inventory inventory) {
+        System.out.println("\nProduct  | Amount | Price");
+        System.out.println("-------------------------");
+        List<Product> products = inventory.browseProducts();
+        for (Product p : products) { // prints out lines aligned with eachother
+            System.out.printf("%-8s | %-6d | %-8.2f\n", p.getName(), p.getQuantity(), p.getPrice());
+        }
+    }
+
+    private static boolean viewBasket(Basket basket, Scanner input) {
+        System.out.println("\n*** Your current basket ***\n");
+        System.out.println("Product  | Amount | Price");
+        System.out.println("-------------------------"); // using entry method to iterate through map
+        Map<Product, Integer> customerBasket = basket.getBasket();
+        for (Map.Entry<Product, Integer> entry : customerBasket.entrySet()) { // prints out lines aligned with eachother
+            System.out.printf("%-8s | %-6d | %-8.2f\n", entry.getKey().getName(), entry.getValue(),
+                    entry.getKey().getPrice() * entry.getValue());
+        }
+        double totalCost = basket.getTotalCost();
+        System.out.println("\nYour total cost: $" + totalCost);
+        System.out.println("\n1. Go to checkout");
+        System.out.println("2. Continue shopping");
+        String choice = input.next().toLowerCase();
+        if (choice.equals("1")) {
+            return true;
+        } 
+        return false;
     }
 }
-
