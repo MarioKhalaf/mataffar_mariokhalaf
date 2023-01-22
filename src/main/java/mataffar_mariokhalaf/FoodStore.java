@@ -22,11 +22,9 @@ public class FoodStore {
 
             switch (choice) {
                 case 1:
-                    // Add products to json file
                     insertProductToJsonFile(inventory, input);
                     break;
                 case 2:
-                    // remove product from json file
                     deleteProductFromJsonFile(inventory, input);
                     break;
                 case 3:
@@ -34,8 +32,6 @@ public class FoodStore {
                     break;
                 case 4:
                     groceryShopping(inventory, basket, input);
-                    break;
-                case 5:
                     break;
                 case 6:
                     return;
@@ -54,25 +50,30 @@ public class FoodStore {
         System.out.println("Enter product quantity: ");
         int quantity = input.nextInt();
         Product addProduct = new Product(pName, price, quantity);
-        System.out.println(inventory.addProductToInventory(addProduct));
+        System.out.println(inventory.add(addProduct, quantity));
     }
 
     private static void deleteProductFromJsonFile(Inventory inventory, Scanner input) {
         System.out.println("Enter the name of the product you want to remove: ");
         String productName = input.next();
-        System.out.println(inventory.removeProductFromInventory(productName));
+        Product product = inventory.getProductByName(productName);
+        System.out.println(inventory.remove(product, product.getQuantity()));
     }
 
     private static void groceryShopping(Inventory inventory, Basket basket, Scanner input) {
+        System.out.println("\nWelcome to the Food Store\nAdd products to your basket by entering its name.");
         while (true) {
-            System.out.println("\nWelcome to the Food Store\nAdd products to your basket by entering its name.");
             displayGroceries(inventory);
             System.out.println("\n1. View basket.\n2. Checkout.");
             String option = input.next();
-            if (option.equalsIgnoreCase("1")) {
+            if (option.equals("1")) {
+                System.out.println("\n*** Your current basket ***\n");
                 adjustBasket(basket, inventory, input);
-            } else if (option.equalsIgnoreCase("2")) {
+                continue;
+            } else if (option.equals("2")) {
                 System.out.println("Checking out...");
+                checkOut();
+                break;
             }
             Product chosenProduct = inventory.getProductByName(option);
             System.out.println("\nEnter amount: ");
@@ -85,9 +86,8 @@ public class FoodStore {
                     System.out.println("\n" + option + " are out of stock\n");
                     continue;
                 }
-                basket.addToBasket(chosenProduct, amount);
-                System.out.println("\n" + amount + " " + option + " added to your basket.");
-                inventory.decreaseInventoryQuantity(chosenProduct, amount);
+                System.out.println(basket.add(chosenProduct, amount));
+                inventory.remove(chosenProduct, amount);
                 inventory.saveProductsToJson();
             } catch (InputMismatchException e) {
                 System.out.println("\nInvalid input. Enter a valid amount");
@@ -96,7 +96,7 @@ public class FoodStore {
         }
     }
 
-    public static void displayGroceries(Inventory inventory) {
+    private static void displayGroceries(Inventory inventory) {
         System.out.println("\nProduct  | Amount | Price");
         System.out.println("-------------------------");
         List<Product> products = inventory.browseProducts();
@@ -106,7 +106,6 @@ public class FoodStore {
     }
 
     private static void displayBasket(Basket basket) {
-        System.out.println("\n*** Your current basket ***\n");
         System.out.println("Product  | Amount | Price");
         System.out.println("-------------------------"); // using entry method to iterate through map
         Map<Product, Integer> customerBasket = basket.getBasket();
@@ -115,25 +114,29 @@ public class FoodStore {
                     entry.getValue(), entry.getKey().getPrice() * entry.getValue());
         }
         double totalCost = basket.getTotalCost();
-        System.out.println("\nYour total cost: $" + totalCost + "\n");
+        System.out.println("\nTotal cost: $" + totalCost + "\n");
     }
 
     private static void adjustBasket(Basket basket, Inventory inventory, Scanner input) {
         while (true) {
             displayBasket(basket);
-            System.out.println("1. Remove product.\n2. Adjust quantity.\n3. Continue shopping.");
+            System.out.println("1. Continue shopping\n2. Adjust quantity.\n3. Remove product.");
             int option = input.nextInt();
-            if (option == 3)
+            if (option == 1)
                 break;
             System.out.println("Enter name of product: ");
-            String product = input.next();
-            Product productName = inventory.getProductByName(product);
-            if (option == 1) {
-                basket.removeFromBasket(productName, 0);
+            String name = input.next();
+            Product productName = inventory.getProductByName(name);
+            if (productName == null){
+                System.out.println("There is no '" + name + "' in the basket.");
             } else if (option == 2) {
                 System.out.println("Enter amount you'd like to remove: ");
                 int amount = input.nextInt();
-                basket.removeFromBasket(productName, amount);
+                basket.remove(productName, amount);
+                inventory.add(productName, amount);
+            } else if (option == 3) {
+                basket.remove(productName, 0);
+                inventory.add(productName, 0);
             }
         }
     }
@@ -141,12 +144,17 @@ public class FoodStore {
     private static void inventoryOrder(Inventory inventory, Scanner input) throws InterruptedException {
         displayGroceries(inventory);
         System.out.println("Name of product you'd like to order more of: ");
-        String productName = input.next();
-        System.out.println("\nEnter amount: ");
+        String product = input.next();
+        Product productName = inventory.getProductByName(product);
+        System.out.println("Enter amount: ");
         int amount = input.nextInt();
         System.out.println("Order has been sent...");
         Thread.sleep(2000);
-        System.out.println("Order has been delieverd.");
-        System.out.println(inventory.reStockInventory(productName, amount)); 
+        System.out.println(inventory.add(productName, amount));
+        System.out.println("Order has been delieverd.\n");
+    }
+    
+    private static void checkOut() {
+
     }
 }
