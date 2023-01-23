@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * @author Mario Khalaf
  */
-class Inventory implements QuantityChange {
+class Inventory implements AddOrRemoveProduct {
     /**
      * two class variables that is used to store the JSON file containing the
      * products.
@@ -71,20 +71,20 @@ class Inventory implements QuantityChange {
     @Override
     public String add(Product product, int amount) {
         for (Product p : products) {
-            if (product.equals(p)) {
-                if (p.getQuantity() >= amount) { // makes sures quantity in stock is more than asked amount
-                    p.setQuantity(p.getQuantity() - amount); // reduces quantity of product
-                }
-                return "New " + product.getName() + " quantity: " + product.getQuantity();
+            if (product.getName().equals(p.getName())) {
+                return product.getName() + " is already in inventory.\n";
             }
         }
         products.add(product);
         saveProductsToJson();
-        return product.getName() + " Has been added to the inventory.";
+        return product.getName() + " Has been added to the inventory.\n";
     }
 
     @Override
-    public String remove(Product product, int amount) {
+    public String remove(Product product, int amount) { 
+        if (product == null) { 
+            return "Product does not exist in inventory.\n";
+        }
         for (Product p : products) {
             if (product.equals(p)) {
                 products.remove(p);
@@ -92,7 +92,7 @@ class Inventory implements QuantityChange {
                 return product.getName() + " Has been removed from inventory";
             }
         }
-        return product.getName() + " Does not exist in inventory";
+        return "";
     }
 
     /**
@@ -116,5 +116,31 @@ class Inventory implements QuantityChange {
             }
         }
         return null;
+    }
+    public String increaseQuantity(Product product, int amount){
+        for (Product p : products) { 
+            if (p.getName().equals(product.getName())) { // compares product name to the one in json file
+                p.setQuantity(p.getQuantity() + amount); // Sets new quantity
+                saveProductsToJson();
+                return "New " + product.getName() + " quantity: " + product.getQuantity() + "\n";
+            }
+        } // handles error if user inputs non existen product or
+        throw new IllegalArgumentException("Product not found in inventory");
+
+    }
+    
+    public String decreaseQuantity(Product product, int quantity) {
+        for (Product p : products) { 
+            if (p.getName().equals(product.getName())) { // compares product name to the one in json file
+                if (p.getQuantity() >= quantity) { // makes sures quantity in stock is more than asked amount
+                    p.setQuantity(p.getQuantity() - quantity); 
+                    saveProductsToJson();
+                    return "New " + product.getName() + " quantity: " + product.getQuantity() + "\n";
+                } else { // handles error user inputs amount more than available in stock
+                    throw new IllegalArgumentException("The product is out of stock");
+                }
+            }
+        } // handles error if user inputs non existen product or
+        throw new IllegalArgumentException("Product not found in inventory");
     }
 }

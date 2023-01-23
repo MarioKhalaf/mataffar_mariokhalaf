@@ -3,12 +3,11 @@ package mataffar_mariokhalaf;
 import java.util.Map;
 import java.util.HashMap;
 /**
-* The Basket class represents a shopping basket that contains- 
-* -items that a customer wants to purchase.
+* The Basket class represents a shopping basket that contains items that a customer wants to purchase.
 * It has methods for adding and removing items from the basket, 
 * as well as getting the total cost of all items in the basket.
 */
-class Basket implements QuantityChange{
+class Basket implements AddOrRemoveProduct{
     /*
     Class variable representing the shopping basket as a map of products (Keys) and their quantities (Values).
     */
@@ -17,29 +16,35 @@ class Basket implements QuantityChange{
     public Basket() {
         basket = new HashMap<>();
     }
+
     @Override
     public String add(Product product, int amount) {
         if (basket.containsKey(product)) {
             int quantity = basket.get(product);
             basket.put(product, quantity + amount);
-            return "New" + product.getName() + " quantity: " + product.getName();
+            return "New " + product.getName() + " quantity: " + basket.get(product) + "\n";
         }else {
             basket.put(product, amount);
-            return product.getQuantity() + " " + product.getName() + " Has been added to your baset.";
-        }
-    }
-    @Override
-    public String remove(Product product, int amount) {
-        if (amount > 0) {
-            int quantity = basket.get(product);
-            basket.put(product, quantity - amount);
-            return "New" + product.getName() + " quantity: " + product.getQuantity();
-        } else {
-            basket.remove(product, basket.get(product));
-            return product.getQuantity() + " " + product.getName() + " Has been removed to your baset.";
+            return product.getName() + " Has been added to your basket.\n";
         }
     }
 
+    @Override
+    public String remove(Product product, int amount) {
+        if (basket.containsKey(product)) {
+            int quantity = basket.get(product);
+            if (quantity - amount <= 0) {
+                basket.remove(product);
+                return "You put back all the " + product.getName() + "\n";
+            } else {
+                basket.put(product, quantity - amount);
+                return amount + " " + product.getName() + " removed from basket.\n";
+            }
+        }else {
+            return product.getName() + " is not in your basket.\n";
+        }
+    }
+  
      /**
      * Get the map representing the basket.
      * @return the map of products and their quantities thats inside the basket
@@ -57,6 +62,10 @@ class Basket implements QuantityChange{
             totalCost += entry.getKey().getPrice() * entry.getValue(); 
         }
         return totalCost;
+    }
+
+    public int getQuantity(Product product) {
+        return basket.get(product);
     }
 
 }
