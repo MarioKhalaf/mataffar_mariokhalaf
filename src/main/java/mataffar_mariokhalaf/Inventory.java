@@ -23,29 +23,27 @@ class Inventory implements AddOrRemoveProduct {
      * products.
      * and the products List variable which stores all the product in the inventory
      */
-    private File productsJson;
+    private File file;
     private List<Product> products;
 
     /**
      * The constructor creates a new Inventory object and loads the products from
-     * the JSON file.
+     * the JSON file to ensure products list is always up to date with the data
      */
     public Inventory() {
-        productsJson = new File("target/foodstock.json");
+        file = new File("target/foodstock.json");
         products = new ArrayList<>();
         loadProductsFromJson();
     }
-
     /**
      * This method loads the products from the JSON file into the products list,
-     * by using object mapper from the jackson library it can serialize and
-     * deserialize
+     * using object mapper from the jackson library it can serialize and deserialize
      * into JSON and java objects.
      */
     public void loadProductsFromJson() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            Map<String, List<Product>> map = objectMapper.readValue(productsJson,
+            Map<String, List<Product>> map = objectMapper.readValue(file,
             new TypeReference<Map<String, List<Product>>>() {});
             products = map.get("Products");
         } catch (IOException e) {
@@ -61,7 +59,7 @@ class Inventory implements AddOrRemoveProduct {
         try {
             Map<String, List<Product>> map = new HashMap<>();
             map.put("Products", products);
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(productsJson, map);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, map);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -93,7 +91,6 @@ class Inventory implements AddOrRemoveProduct {
         }
         return "";
     }
-
     /**
      * get List of all products in the basket
      * @return list of products
@@ -101,7 +98,6 @@ class Inventory implements AddOrRemoveProduct {
     public List<Product> browseProducts() {
         return products;
     }
-
     /**
      * method iterates a string product name through the products list to match with the product class object
      * @param name The String name of the product to search for
@@ -116,6 +112,7 @@ class Inventory implements AddOrRemoveProduct {
         }
         return null;
     }
+    
     public String increaseQuantity(Product product, int amount){
         for (Product p : products) { 
             if (p.getName().equals(product.getName())) { // compares product name to the one in json file
