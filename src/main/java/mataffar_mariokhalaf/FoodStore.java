@@ -1,5 +1,7 @@
 package mataffar_mariokhalaf;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
@@ -16,27 +18,29 @@ public class FoodStore {
             System.out.println("2. Remove product from inventory");
             System.out.println("3. Re-stock inventory.");
             System.out.println("4. Start shopping.");
-            System.out.println("5. Exit");
+            System.out.println("5. Order History.");
+            System.out.println("6. Exit");
 
-            int choice = input.nextInt();
+            String choice = input.next();
 
             switch (choice) {
-                case 1:
+                case "1":
                     insertProductToJsonFile(inventory, input);
                     break;
-                case 2:
+                case "2":
                     deleteProductFromJsonFile(inventory, input);
                     break;
-                case 3:
+                case "3":
                     inventoryOrder(inventory, input);
                     break;
-                case 4:
+                case "4":
                     groceryShopping(inventory, basket, input);
                     break;
-                case 6:
-                    return;
+                case "5":
+                    displayOrderHistory();
+                    break;
                 default:
-                    System.out.println("Invalid choice. Please try again.");
+                    System.out.println("Invalid choice. Please try again.\n");
                     break;
             }
         }
@@ -180,6 +184,35 @@ public class FoodStore {
         System.out.println("All products have been scanned\nYour total is $" + basket.getTotalCost());
         Order order = new Order(basket.getBasket(), basket.getTotalCost());
         order.saveOrderToJson();
+        System.out.println("\n---Here is your receipt---");
+        System.out.println("----------------------------");
+        displayBasket(basket);
+        System.out.println("----------------------------");
+    }
 
+    private static void displayOrderHistory() {
+        Order order = new Order();
+        List<Map<String, Object>> orderHistory = order.getOrderHistory();
+        Collections.sort(orderHistory, new Comparator<Map<String, Object>>() {
+        @Override
+        public int compare(Map<String, Object> order1, Map<String, Object> order2) {
+            double totalPrice1 = (double) order1.get("Total price");
+            double totalPrice2 = (double) order2.get("Total price");
+            return Double.compare(totalPrice2, totalPrice1);
+        }});
+        for(Map<String, Object> o : orderHistory) {
+            System.out.println("Products:");
+            for (Map.Entry<String, Object> entry : o.entrySet()) {
+                if (entry.getKey().equals("Products")) {
+                    Map<String, Integer> products = (Map<String, Integer>) entry.getValue();
+                    for (Map.Entry<String, Integer> product : products.entrySet()) {
+                        System.out.println("- " + product.getKey() + ": " + product.getValue());
+                    }
+                }
+            }
+            System.out.println("Date & time: " + o.get("Date & time"));
+            System.out.println("Total price: " + o.get("Total price"));
+            System.out.println();
+        }
     }
 }

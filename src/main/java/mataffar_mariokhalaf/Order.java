@@ -3,7 +3,6 @@ package mataffar_mariokhalaf;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +14,7 @@ class Order {
     private Map<String, Integer> items;
     private double totalPrice;
     private LocalDateTime date;
-    private List<Map<String, Object>> orders;
-    
+    private File file;
 
     public Order(Map<Product, Integer> receipt, double totalCost) {
         this.items = new HashMap<>();
@@ -25,15 +23,29 @@ class Order {
         }
         this.totalPrice = totalCost;
         this.date = LocalDateTime.now();
-        this.orders = new ArrayList<>();
+        file = new File("target/orderhistory.json");
+    }
+
+    public Order() {
+        file = new File("target/orderhistory.json");
+    }
+
+    public List<Map<String, Object>> getOrderHistory(){  
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            List<Map<String, Object>> existingOrders;
+            existingOrders = objectMapper.readValue(file, new TypeReference<List<Map<String, Object>>>(){});
+            return existingOrders;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public void saveOrderToJson() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            File file = new File("target/orderhistory.json");
-            List<Map<String, Object>> existingOrders;
-            existingOrders = objectMapper.readValue(file, new TypeReference<List<Map<String, Object>>>(){});
+            List<Map<String, Object>> existingOrders = getOrderHistory();
             Map<String, Object> newOrder = new HashMap<>();
             newOrder.put("Products", items);
             newOrder.put("Total price", totalPrice);
