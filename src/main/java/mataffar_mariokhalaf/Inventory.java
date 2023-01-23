@@ -46,9 +46,8 @@ class Inventory implements AddOrRemoveProduct {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             Map<String, List<Product>> map = objectMapper.readValue(productsJson,
-                    new TypeReference<Map<String, List<Product>>>() {
-                    });
-            products = map.get("Product");
+            new TypeReference<Map<String, List<Product>>>() {});
+            products = map.get("Products");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,7 +60,7 @@ class Inventory implements AddOrRemoveProduct {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             Map<String, List<Product>> map = new HashMap<>();
-            map.put("Product", products);
+            map.put("Products", products);
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(productsJson, map);
         } catch (IOException e) {
             e.printStackTrace();

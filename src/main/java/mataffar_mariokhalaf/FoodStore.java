@@ -60,8 +60,9 @@ public class FoodStore {
         System.out.println(inventory.remove(product, 0));
     }
 
-    private static void groceryShopping(Inventory inventory, Basket basket, Scanner input) {
-        System.out.println("\nWelcome to the Food Store\nAdd products to your basket by entering its name.");
+    private static void groceryShopping(Inventory inventory, Basket basket, Scanner input) throws InterruptedException {
+        Customer customer = new Customer();
+        System.out.println("\nWelcome to the Food Store " + customer.getName() + "\nAdd products to your basket by entering its name.");
         while (true) {
             System.out.println("\n1. View basket.\n2. Checkout.");
             displayGroceries(inventory);
@@ -71,8 +72,7 @@ public class FoodStore {
                 adjustBasket(basket, inventory, input);
                 continue;
             } else if (option.equals("2")) {
-                System.out.println("Checking out...");
-                checkOut();
+                checkOut(basket, customer, input);
                 break;
             }
             Product chosenProduct = inventory.getProductByName(option);
@@ -174,7 +174,12 @@ public class FoodStore {
         }
     }
 
-    private static void checkOut() {
+    private static void checkOut(Basket basket, Customer customer, Scanner input) throws InterruptedException {
+        System.out.println("Welcome to the check out, please put all your products on the conveyor belt.");        
+        Thread.sleep(3000);
+        System.out.println("All products have been scanned\nYour total is $" + basket.getTotalCost());
+        Order order = new Order(basket.getBasket(), basket.getTotalCost());
+        order.saveOrderToJson();
 
     }
 }

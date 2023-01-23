@@ -3,19 +3,16 @@ package mataffar_mariokhalaf;
 class Customer {
     private String name;
 
-    public Customer(String name) {
-        this.name = name;
+    public Customer() {
+        this.name = getName();
     }
-
+    
+    public void setName() {
+        int id = 0;
+        this.name = "Customer " + id;
+        id++;
+    }
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void complains() {
-        System.out.println(getName() + " is complaining.");
     }
 }
