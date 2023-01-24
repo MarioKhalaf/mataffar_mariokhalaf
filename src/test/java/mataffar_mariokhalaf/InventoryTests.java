@@ -82,7 +82,6 @@ class InventoryTests {
         inventory.add(product);
         String result = inventory.increaseQuantity(product, 5);
         assertEquals("New cookies quantity: 15\n", result);
-        inventory.remove(product);
     }
 
     @Test
@@ -91,5 +90,38 @@ class InventoryTests {
         new Product("not in inventory", 0, 0), 5));
     }
 
+    @Test
+    public void shouldNotIncreasingQuantityWithNegativeInput() {
+        inventory.add(product);
+        String result = inventory.increaseQuantity(product, -5);
+        assertEquals("Invalid amount! No negative quantities.", result );
+        inventory.remove(product);
+    }
 
+    @Test
+    public void shouldNotDecreaseQuantityWithNegativeInput() {
+        inventory.add(product);
+        String result = inventory.decreaseQuantity(product, -5);
+        assertEquals("Invalid amount! No negative quantities.", result);
+        inventory.remove(product);
+    }
+
+    @Test
+    public void shouldThrowIllegalArgumentWhenProductOutOfStock() {
+        inventory.add(product);
+        Exception ex = assertThrows(IllegalArgumentException.class, () -> {
+        inventory.decreaseQuantity(product, 15);
+        });
+        assertEquals("The product is out of stock", ex.getMessage());
+        inventory.remove(product);
+    }
+
+    @Test
+    public void shouldDecreaseQuantity() {
+        inventory.add(product);
+        String result = inventory.decreaseQuantity(product, 5);
+        assertEquals("New cookies quantity: 5\n", result);
+        inventory.remove(product);
+    }
+    
 }
