@@ -7,7 +7,7 @@ import java.util.HashMap;
 * It has methods for adding and removing items from the basket, 
 * as well as getting the total cost of all items in the basket.
 */
-class Basket implements AddOrRemoveProduct{
+class Basket{
     /*
     Class variable representing the shopping basket as a map of products (Keys) and their quantities (Values).
     */
@@ -17,8 +17,7 @@ class Basket implements AddOrRemoveProduct{
         basket = new HashMap<>();
     }
 
-    @Override
-    public String add(Product product, int amount) {
+    public String addToBasket(Product product, int amount) {
         if (basket.containsKey(product)) {
             int quantity = basket.get(product);
             basket.put(product, quantity + amount);
@@ -29,8 +28,7 @@ class Basket implements AddOrRemoveProduct{
         }
     }
 
-    @Override
-    public String remove(Product product, int amount) {
+    public String removeFromBasket(Product product, int amount) {
         if (basket.containsKey(product)) {
             int quantity = basket.get(product);
             if (quantity - amount <= 0) {

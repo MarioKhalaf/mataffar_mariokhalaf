@@ -6,7 +6,7 @@ It contains information about the product name, price and quantity.
 */
 class Product {
     private String name;
-    private float price;
+    private double price;
     private int quantity;
     /**
     This constructs a new Product object with the given name, price and quantity.
@@ -14,7 +14,7 @@ class Product {
     @param price the price of the product
     @param quantity the quantity of the product in inventory
     */
-    public Product(String name, float price, int quantity) {
+    public Product(String name, double price, int quantity) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
@@ -44,7 +44,7 @@ class Product {
      * Get price of certain product
      * @return price of product
      */
-    public float getPrice() {
+    public double getPrice() {
         return price;
     }
     /**

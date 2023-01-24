@@ -54,14 +54,14 @@ public class FoodStore {
         System.out.println("Enter product quantity: ");
         int quantity = input.nextInt();
         Product addProduct = new Product(pName, price, quantity);
-        System.out.println(inventory.add(addProduct, quantity));
+        System.out.println(inventory.add(addProduct));
     }
 
     private static void deleteProductFromJsonFile(Inventory inventory, Scanner input) {
         System.out.println("Enter the name of the product you want to remove: ");
         String name = input.next();
         Product product = inventory.getProductByName(name);
-        System.out.println(inventory.remove(product, 0));
+        System.out.println(inventory.remove(product));
     }
 
     private static void groceryShopping(Inventory inventory, Basket basket, Scanner input) throws InterruptedException {
@@ -90,7 +90,7 @@ public class FoodStore {
                     System.out.println("\n" + option + " are out of stock\n");
                     continue;
                 }
-                System.out.println(basket.add(chosenProduct, amount));
+                System.out.println(basket.addToBasket(chosenProduct, amount));
                 inventory.decreaseQuantity(chosenProduct, amount);
                 inventory.saveProductsToJson();
             } catch (InputMismatchException e) {
@@ -125,32 +125,32 @@ public class FoodStore {
         while (true) {
             displayBasket(basket);
             System.out.println("1. Continue shopping\n2. Add.\n3. Remove.");
-            int option = input.nextInt();
-            if (option == 1)
+            String option = input.next();
+            if (option.equals("1"))
                 break;
             System.out.println("Enter name of product: ");
             String name = input.next();
             Product productName = inventory.getProductByName(name);
             if (productName == null) { 
                 System.out.println("There is no '" + name + "' in the basket.\n");
-            } else if (option == 2) {
+            } else if (option.equals("2")) {
                 System.out.println("Enter amount you'd like to add: ");
                 int amount = input.nextInt();
                 if (amount > productName.getQuantity()) { // prevents user from entering number higher than whats in inventory
                     System.out.println("There are only " + productName.getQuantity() + " " + name + " left in stock.\n");
                 } else {
                     inventory.decreaseQuantity(productName, amount);
-                    String message = basket.add(productName, amount);
+                    String message = basket.addToBasket(productName, amount);
                     System.out.println(message);
                 }
-            } else if (option == 3) {
+            } else if (option.equals("3")) {
                 System.out.println("Enter amount you'd like to remove: ");
                 int amount = input.nextInt();
                 int quantity = basket.getQuantity(productName);
                 if (quantity - amount < 0) {
                     amount = quantity; // if amount is more than quantity, set amount equal to quantity to not become negative number
                 } 
-                String message = basket.remove(productName, amount);
+                String message = basket.removeFromBasket(productName, amount);
                 inventory.increaseQuantity(productName, amount);
                 System.out.println(message);
             }
