@@ -19,7 +19,8 @@ class InventoryTests {
         product = new Product("cookies", 0.99, 10);
     }
     
-    //using the add and remove methods after finishing each test to not mess with rest of tests
+    // using the add and remove methods after finishing each test so every test is self contained
+    // does not mess with more attempts of testing the same test.
     @Test
     public void shouldAddProductToInventory() {
         String result = inventory.add(product);
@@ -117,11 +118,21 @@ class InventoryTests {
     }
 
     @Test
+    public void shouldThrowIllegalArgumentWhenProductNotFoundInInventory() {
+        Exception ex = assertThrows(IllegalArgumentException.class, () -> {
+        inventory.decreaseQuantity(product, 5);
+        });
+        assertEquals("Product not found in inventory", ex.getMessage());
+    }
+
+    @Test
     public void shouldDecreaseQuantity() {
         inventory.add(product);
         String result = inventory.decreaseQuantity(product, 5);
         assertEquals("New cookies quantity: 5\n", result);
         inventory.remove(product);
-    }
+    }   
+
+
     
 }

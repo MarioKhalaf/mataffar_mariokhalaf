@@ -23,29 +23,17 @@ class Order {
         }
         this.totalPrice = totalCost;
         this.date = LocalDateTime.now();
-        file = new File("target/orderhistory.json");
+        file = new File("orderhistory.json");
     }
 
     public Order() {
-        file = new File("target/orderhistory.json");
+        file = new File("orderhistory.json");
     }
 
-    public List<Map<String, Object>> getOrderHistory(){  
+    public void writeOrderToJson() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            List<Map<String, Object>> existingOrders;
-            existingOrders = objectMapper.readValue(file, new TypeReference<List<Map<String, Object>>>(){});
-            return existingOrders;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public void saveOrderToJson() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            List<Map<String, Object>> existingOrders = getOrderHistory();
+            List<Map<String, Object>> existingOrders = readOrderHistoryFromJson(); 
             Map<String, Object> newOrder = new HashMap<>();
             newOrder.put("Products", items);
             newOrder.put("Total price", totalPrice);
@@ -54,6 +42,18 @@ class Order {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, existingOrders);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public List<Map<String, Object>> readOrderHistoryFromJson(){  
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            List<Map<String, Object>> existingOrders;
+            existingOrders = objectMapper.readValue(file, new TypeReference<List<Map<String, Object>>>(){});
+            return existingOrders;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

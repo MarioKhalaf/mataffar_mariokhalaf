@@ -12,11 +12,18 @@ class Basket{
     Class variable representing the shopping basket as a map of products (Keys) and their quantities (Values).
     */
     private Map<Product, Integer> basket;
-
+    /**
+     * a constructor for the basket class initiating the basket hashmap object.
+     */
     public Basket() {
         basket = new HashMap<>();
     }
-
+    /**
+     * adds products to basket or adds more of a certain product already in the basket
+     * @param product name of product 
+     * @param amount  quantity to be added
+     * @return  string respons to user 
+     */
     public String addToBasket(Product product, int amount) {
         if (basket.containsKey(product)) {
             int quantity = basket.get(product);
@@ -27,7 +34,12 @@ class Basket{
             return product.getName() + " Has been added to your basket.\n";
         }
     }
-
+    /**
+     * removes product or certain quantity from the basket
+     * @param product the name of the product 
+     * @param amount  amount to be removed
+     * @return  string response to user
+     */
     public String removeFromBasket(Product product, int amount) {
         if (basket.containsKey(product)) {
             int quantity = basket.get(product);
@@ -61,7 +73,11 @@ class Basket{
         }
         return totalCost;
     }
-
+    /**
+     * a getter to return quantity for specific product
+     * @param product
+     * @return quantity
+     */
     public int getQuantity(Product product) {
         return basket.get(product);
     }
