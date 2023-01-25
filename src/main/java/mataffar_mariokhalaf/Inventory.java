@@ -3,6 +3,7 @@ package mataffar_mariokhalaf;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -104,7 +105,7 @@ class Inventory {
      * get List of all products in the basket
      * @return list of products
      */
-    public List<Product> browseProducts() {
+    public List<Product> getProducts() {
         return products;
     }
     /**

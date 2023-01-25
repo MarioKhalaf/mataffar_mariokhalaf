@@ -2,10 +2,10 @@ package mataffar_mariokhalaf;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
 
 public class FoodStore {
@@ -13,16 +13,17 @@ public class FoodStore {
         Inventory inventory = new Inventory();
         Basket basket = new Basket();
         Scanner input = new Scanner(System.in);
-        Map<Integer, Basket> customers = new HashMap<>();
 
         while (true) {
+            System.out.println();
             System.out.println("1. Add product to inventory");
             System.out.println("2. Remove product from inventory");
             System.out.println("3. Re-stock inventory.");
             System.out.println("4. Start shopping.");
-            System.out.println("5. Order History.");
-            System.out.println("6. Exit");
-
+            System.out.println("5. View basket");
+            System.out.println("6. Order History.");
+            System.out.println("7. Start Food Store simulator.");
+            System.out.println("8. Exit");
             String choice = input.next();
 
             switch (choice) {
@@ -39,10 +40,17 @@ public class FoodStore {
                     groceryShopping(inventory, basket, input);
                     break;
                 case "5":
+                    if (basket.getBasket().size() == 0){
+                        System.out.println("Basket is empty!");
+                        break;}
+                    else
+                        adjustBasket(basket, inventory, input);
+                        break;
+                case "6":
                     displayOrderHistory();
                     break;
-                case "6":
-                    swapCustomer(input);
+                case "7":
+                    simulateFoodStore(inventory);
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.\n");
@@ -86,37 +94,28 @@ public class FoodStore {
      * @throws InterruptedException using Thread.sleep to pause the program for a few seconds.
      */
     private static void groceryShopping(Inventory inventory, Basket basket, Scanner input) throws InterruptedException {
-        
         System.out.println("\nWelcome to the Food Store\nAdd products to your basket by entering its name.");
         while (true) {
-            System.out.println("\n1. View basket.\n2. Checkout.\n3. Return to menu");
-            displayGroceries(inventory);
-            String option = input.next();
-            if (option.equals("1")) {
-                System.out.println("\n*** Your current basket ***\n");
-                
-                adjustBasket(basket, inventory, input);
-                continue;
-            } else if (option.equals("2")) {
-                checkOut(basket, input);
-                break;
-            } else if (option.equals("3")) {
-                break;
-            }
-            Product chosenProduct = inventory.getProductByName(option);
-            System.out.println("\nEnter amount: ");
             try {
+                System.out.println("\n1.Return to menu");
+                displayGroceries(inventory);
+                String option = input.next();
+                if (option.equals("1")) {
+                    break;
+                } 
+                Product chosenProduct = inventory.getProductByName(option);
+                System.out.println("\nEnter amount: ");
                 int amount = input.nextInt();
                 if (chosenProduct == null) {
                     System.out.println("\nProduct not found in inventory\n");
-                    continue;
                 } else if (chosenProduct.getQuantity() < amount) {
                     System.out.println("\n" + option + " are out of stock\n");
-                    continue;
+                } else {
+                    System.out.println(basket.addToBasket(chosenProduct, amount));
+                    inventory.decreaseQuantity(chosenProduct, amount);
+                    inventory.writeToJsonFile();
+        
                 }
-                System.out.println(basket.addToBasket(chosenProduct, amount));
-                inventory.decreaseQuantity(chosenProduct, amount);
-                inventory.writeToJsonFile();
             } catch (InputMismatchException e) {
                 System.out.println("\nInvalid input. Enter a valid amount");
                 input.next();
@@ -130,7 +129,7 @@ public class FoodStore {
     private static void displayGroceries(Inventory inventory) {
         System.out.println("\nProduct  | Amount | Price");
         System.out.println("-------------------------");
-        List<Product> products = inventory.browseProducts();
+        List<Product> products = inventory.getProducts();
         for (Product p : products) { // prints out lines aligned with eachother
             System.out.printf("%-8s | %-6d | %-8.2f\n", p.getName(), p.getQuantity(), p.getPrice());
         }
@@ -141,7 +140,7 @@ public class FoodStore {
      * @param basket instance of basket class.
      */
     private static void displayBasket(Basket basket) {
-        System.out.println("Product  | Amount | Price");
+        System.out.println("\nProduct  | Amount | Price");
         System.out.println("-------------------------"); // using entry method to iterate through map
         Map<Product, Integer> customerBasket = basket.getBasket();
         for (Map.Entry<Product, Integer> entry : customerBasket.entrySet()) { // prints out lines aligned with eachother
@@ -157,39 +156,46 @@ public class FoodStore {
      * @param inventory instance of inventory class
      * @param basket instance of basket class
      * @param input Scanner to handle user inputs
+     * @throws InterruptedException
      */
-    private static void adjustBasket(Basket basket, Inventory inventory, Scanner input) {
+    private static void adjustBasket(Basket basket, Inventory inventory, Scanner input) throws InterruptedException {
         while (true) {
             displayBasket(basket);
-            System.out.println("1. Continue shopping\n2. Add.\n3. Remove.");
+            System.out.println("1. Checkout.\n2. Return to menu.\n3. Add.\n4. Remove.");
             String option = input.next();
-            if (option.equals("1"))
+            if (option.equals("1" )) {
+                checkOut(basket);
                 break;
+            }else if (option.equals("2")) {
+                break;
+            }
             System.out.println("Enter name of product: ");
             String name = input.next();
             Product productName = inventory.getProductByName(name);
-            if (productName == null) { 
-                System.out.println("There is no '" + name + "' in the basket.\n");
-            } else if (option.equals("2")) {
+            if (productName == null) {
+                System.out.println("Product not found in inventory\n");
+                continue;
+            }
+            if (option.equals("3")) {
                 System.out.println("Enter amount you'd like to add: ");
                 int amount = input.nextInt();
                 if (amount > productName.getQuantity()) { // prevents user from entering number higher than whats in inventory
                     System.out.println("There are only " + productName.getQuantity() + " " + name + " left in stock.\n");
                 } else {
                     inventory.decreaseQuantity(productName, amount);
-                    String message = basket.addToBasket(productName, amount);
-                    System.out.println(message);
+                    String response = basket.addToBasket(productName, amount);
+                    System.out.println(response);
                 }
-            } else if (option.equals("")) {
+            } else if (option.equals("4")) {
                 System.out.println("Enter amount you'd like to remove: ");
                 int amount = input.nextInt();
                 int quantity = basket.getQuantity(productName);
                 if (quantity - amount < 0) {
                     amount = quantity; // if amount is more than quantity, set amount equal to quantity to not become negative number
                 } 
-                String message = basket.removeFromBasket(productName, amount);
+                String response = basket.removeFromBasket(productName, amount);
                 inventory.increaseQuantity(productName, amount);
-                System.out.println(message);
+                System.out.println(response);
             }
         }
     }
@@ -227,13 +233,12 @@ public class FoodStore {
      * @param input Scanner to handle user inputs
      * @throws InterruptedException
      */
-    private static void checkOut(Basket basket, Scanner input) throws InterruptedException {
-        System.out.println("Welcome to the check out, please put all your products on the conveyor belt.");        
+    private static void checkOut(Basket basket) throws InterruptedException {
         Thread.sleep(3000);
-        System.out.println("All products have been scanned\nYour total is $" + basket.getTotalCost());
+        System.out.println("\nAll products have been scanned\n total is $" + basket.getTotalCost());
         Order order = new Order(basket.getBasket(), basket.getTotalCost());
         order.writeOrderToJson();
-        System.out.println("\n---Here is your receipt---");
+        System.out.println("\n        Receipt    ");
         System.out.println("----------------------------");
         displayBasket(basket);
         System.out.println("----------------------------");
@@ -267,8 +272,61 @@ public class FoodStore {
             System.out.println();
         }
     }
+    /**
+     * A simulator that creates a set amount of customers shopping for groceries
+     * By using threads to run the customers concurrently instead of 1 by 1.
+     * @param inventory instance of inventory class
+     * @throws InterruptedException to help slow down to read whats happening in the simulator.
+     */
+    private static void simulateFoodStore(Inventory inventory) throws InterruptedException {
+        System.out.println("Simulation mode activated. Press any key to start.");
+        Thread[] threads = new Thread[3]; // Create an array of threads
+        for (int i = 0; i < 3; i++) {
+            // Create a new thread for each customer
+            int id = i + 1;
+            threads[i] = new Thread(() -> {
+                try {
+                    // runs the method concurrently to simulate multiple customers at the same time shopping
+                    simulateSingleCustomer(id, inventory);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+            threads[i].start(); // Start the thread
+            Thread.sleep(1000);
+        }
+        for (Thread t : threads) {
+            t.join();
+        }
+        System.out.println("Simulation mode deactivated.");
+    }
+    
+    private static void simulateSingleCustomer(int id, Inventory inventory) throws InterruptedException {
+        Random rand = new Random();
+        Basket customerBasket = new Basket(); // Creates a basket for each customer
+        System.out.println("\nCustomer " + id + " has entered the store.");
+        for (int j = 1; j <= 3; j++) {
+            Thread.sleep(1000);
+            Product product = getRandomProduct(inventory, rand);
+            if (product.getQuantity() == 0) {
+                System.out.println("\nCustomer " + id + ": God damn! These shit " + product.getName() + " are out of stock.");
+                continue;
+            }
+            int quantity = rand.nextInt(10);
+            customerBasket.addToBasket(product, quantity);
+            inventory.decreaseQuantity(product, quantity);
+            System.out.println("\nCustomer " + id + " has added " + quantity + " " + product.getName() + " to their basket.");
+        }
+        Order checkOut = new Order(customerBasket.getBasket(), customerBasket.getTotalCost());
+        checkOut.writeOrderToJson();
+        System.out.println("\nCustomer " + id + " is finished and pays " + customerBasket.getTotalCost());
+        customerBasket.clearBasket();
+    }
 
-    private static void swapCustomer(Scanner input){
 
+    private static Product getRandomProduct(Inventory inventory, Random rand) {
+        int randomIndex = rand.nextInt(inventory.getProducts().size());
+        Product randomProduct = inventory.getProducts().get(randomIndex);
+        return randomProduct;
     }
 }

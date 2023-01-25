@@ -18,6 +18,29 @@ class Basket{
     public Basket() {
         basket = new HashMap<>();
     }
+         /**
+     * Get the map representing the basket.
+     * @return the map of products and their quantities thats inside the basket
+     */
+    public Map<Product, Integer> getBasket() {
+        return basket;
+    }
+
+    public void setBasket(Map<Product, Integer> basket) {
+        this.basket = basket;
+    }
+    public void clearBasket() {
+        basket.clear();
+    }
+    /**
+     * a getter to return quantity for specific product
+     * @param product
+     * @return quantity
+     */
+    public int getQuantity(Product product) {
+        return basket.get(product);
+    }
+
     /**
      * adds products to basket or adds more of a certain product already in the basket
      * @param product name of product 
@@ -54,15 +77,7 @@ class Basket{
             return product.getName() + " is not in your basket.\n";
         }
     }
-  
      /**
-     * Get the map representing the basket.
-     * @return the map of products and their quantities thats inside the basket
-     */
-    public Map<Product, Integer> getBasket() {
-        return basket;
-    }
-    /**
      * To get the total cost of all items inside the basket
      * @return the total cost
      */
@@ -73,14 +88,7 @@ class Basket{
         }
         return totalCost;
     }
-    /**
-     * a getter to return quantity for specific product
-     * @param product
-     * @return quantity
-     */
-    public int getQuantity(Product product) {
-        return basket.get(product);
-    }
+
 
 }
 
