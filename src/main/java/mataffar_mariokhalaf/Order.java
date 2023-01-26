@@ -21,7 +21,7 @@ class Order {
     private Map<String, Integer> products;
     private double totalPrice;
     private LocalDateTime date;
-    private File file;
+    File file;
     /**
     * This constructor creates a new Order object with a given basket and total cost.
     * using for loop to extract the Products and their respective String names from the basket

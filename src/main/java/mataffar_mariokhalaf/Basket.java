@@ -8,6 +8,7 @@ import java.util.HashMap;
 * as well as getting the total cost of all items in the basket.
 */
 class Basket{
+    public static final String FoodStore = null;
     /*
     Class variable representing the shopping basket as a map of products (Keys) and their quantities (Values).
     */

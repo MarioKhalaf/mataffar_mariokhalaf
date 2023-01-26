@@ -185,7 +185,7 @@ public class FoodStore {
      * @param input     Scanner to handle user inputs
      * @throws InterruptedException pauses program for better user interaction
      */
-    private static void adjustBasket(Basket basket, Inventory inventory, Scanner input) throws InterruptedException {
+    public static void adjustBasket(Basket basket, Inventory inventory, Scanner input) throws InterruptedException {
         while (true) {
             displayBasket(basket);
             System.out.println("1. Checkout.\n2. Return to menu.\n3. Add.\n4. Remove.");
@@ -236,7 +236,7 @@ public class FoodStore {
      * @param input     Scanner to handle user inputs
      * @throws InterruptedException sleep mode for a fun interaction with user
      */
-    private static void inventoryOrder(Inventory inventory, Scanner input) throws InterruptedException {
+    static void inventoryOrder(Inventory inventory, Scanner input) throws InterruptedException {
         displayGroceries(inventory);
         System.out.println("\nWholesale gets you a 30% discount on all products!");
         System.out.println("Name of product you'd like to order more of: ");
@@ -268,7 +268,7 @@ public class FoodStore {
      * @param input    Scanner to handle user inputs
      * @throws InterruptedException
      */
-    private static void checkOut(Basket basket) throws InterruptedException {
+    public static void checkOut(Basket basket) throws InterruptedException {
         Thread.sleep(3000);
         System.out.println("\nAll products have been scanned\n total is $" + basket.getTotalCost());
         Order order = new Order(basket.getBasket(), basket.getTotalCost());
@@ -285,7 +285,7 @@ public class FoodStore {
      * uses comparator and sort() to compare each content inside the list of maps in
      * order of highest total cost.
      */
-    private static void displayOrderHistory() {
+    public static void displayOrderHistory() {
         Order order = new Order();
         // a list of maps containing string names and a second map which also contains
         // the product name & quantity
@@ -358,7 +358,7 @@ public class FoodStore {
      * @param inventory
      * @throws InterruptedException
      */
-    private static void simulateCustomer(int id, Inventory inventory) throws InterruptedException {
+    public static void simulateCustomer(int id, Inventory inventory) throws InterruptedException {
         Random rand = new Random();
         Basket customerBasket = new Basket(); // Creates a basket for each customer
         System.out.println("\nCustomer " + id + " has entered the store.");

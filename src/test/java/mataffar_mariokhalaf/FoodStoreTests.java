@@ -2,35 +2,15 @@ package mataffar_mariokhalaf;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
-import static org.mockito.Mockito.*;
-
 
 import org.junit.jupiter.api.Test;
-import static org.hamcrest.Matchers.*;
+
 
 public class FoodStoreTests {
-
-    // @Test
-    // public void shouldInsertProductToJsonFile() {
-    //     Inventory mockInventory = mock(Inventory.class);
-    //     Scanner mockScanner = mock(Scanner.class);
-
-    //     when(mockScanner.next()).thenReturn("apples");
-    //     when(mockScanner.nextDouble()).thenReturn(5.99);
-    //     when(mockScanner.nextInt()).thenReturn(10);
-    //     FoodStore.insertProductToJsonFile(mockInventory, mockScanner);
-    //     Product expectedProduct = new Product("apples", 5.99, 10);
-    //     verify(mockInventory).add(expectedProduct);
-    // }
+ 
 
     @Test
     public void shouldDeleteProductFromJsonFile() {
@@ -69,7 +49,7 @@ public class FoodStoreTests {
     }
 
     @Test
-    public void testGroceryShopping_OutOfStock() throws InterruptedException {
+    public void testGroceryShoppingOutOfStock() throws InterruptedException {
         Inventory mockInventory = mock(Inventory.class);
         Basket mockBasket = mock(Basket.class);
         Scanner mockScanner = mock(Scanner.class);
@@ -82,5 +62,30 @@ public class FoodStoreTests {
         verify(mockBasket, never()).addToBasket(product, 20);
     }
 
+    @Test
+    public void shouldCreateSuccessfullOrder() throws InterruptedException {
+        Inventory mockInventory = mock(Inventory.class);
+        Scanner mockScanner = mock(Scanner.class);
+        when(mockScanner.next()).thenReturn("apples");
+        when(mockScanner.nextInt()).thenReturn(10);
+        when(mockInventory.getProductByName("apples")).thenReturn(new Product("apples", 5.99, 15));
 
+        FoodStore.inventoryOrder(mockInventory, mockScanner);
+        verify(mockInventory, times(1)).getProductByName("apples");
+        verify(mockInventory, times(1)).increaseQuantity(any(Product.class), eq(10));
+    }
+
+    @Test
+    public void shouldNotCreateOrderIfProdcutDoesNotExistInInventory() throws InterruptedException {
+        Inventory mockInventory = mock(Inventory.class);
+        Scanner mockScanner = mock(Scanner.class);
+        when(mockScanner.next()).thenReturn("oranges", "1");
+        when(mockInventory.getProductByName("oranges")).thenReturn(null);
+        
+        FoodStore.inventoryOrder(mockInventory, mockScanner);
+        verify(mockInventory, times(1)).getProductByName("oranges");
+        verify(mockInventory, never()).increaseQuantity(any(Product.class), anyInt());
+    }
+
+  
 }
