@@ -34,14 +34,12 @@ class BasketTests {
 
     @Test
     public void shouldRemoveCertainQuantityOfProductFromBasket() {
-        // here i create a mock product object
-        Product mockProduct = mock(Product.class);
-        Basket mockBasket = mock(Basket.class);
-        when(mockBasket.removeFromBasket(mockProduct, 5)).thenReturn("5 apples removed from basket.\n");
-        String result = mockBasket.removeFromBasket(mockProduct, 5);
-        assertEquals("5 apples removed from basket.\n", result);
-        // and i verify that the mock Product has been removed from the mock Basket
-        verify(mockBasket).removeFromBasket(mockProduct, 5);
+        Product product = new Product("apples", 5.99, 15);
+        Basket basket = new Basket();
+        basket.addToBasket(product,5);
+        String result = basket.removeFromBasket(product, 3);
+        assertEquals("3 apples removed from basket.\n", result);
+
     }
 
     @Test

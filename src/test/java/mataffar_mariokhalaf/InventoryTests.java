@@ -74,7 +74,7 @@ class InventoryTests {
         assertEquals(mockProduct, mockInventory.getProductByName("cookies"));
         assertNull(mockInventory.getProductByName("not in inventory"));
     }
-
+ 
     @Test
     public void shouldIncreaseQuantity() {
         inventory.add(product);
@@ -128,8 +128,7 @@ class InventoryTests {
         String result = inventory.decreaseQuantity(product, 5);
         assertEquals("New cookies quantity: 5\n", result);
         inventory.remove(product);
-    }   
-
+    }  
 
     
 }
