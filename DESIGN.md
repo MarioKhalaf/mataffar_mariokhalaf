@@ -3,12 +3,12 @@ The Food Store project is a program that simulates a grocery store's inventory m
 
 # Classes
 ## FoodStore
- This is the main class that runs the program. It contains a menu that allows the user to interact with the program.
+This is the main class that runs the program. It contains a switch case menu that allows the user to interact with the different parts of the program.
 ## Inventory
-Reads This class is responsible for managing the products in the store. It loads the products from a JSON file that then allows adding and removing products from the inventory and writes the updated list back to the json file, which is achieved using the jackson JSON library and the use of objectMapper. It provides multiple methods for browsing the products, aswell as increasing and decreasing quantity.
+This class is responsible for managing the products in the store. It loads the products from a JSON file that then allows adding and removing products from the inventory and writes the updated list back to the json file, which is achieved using the jackson JSON library and the use of objectMapper. It provides multiple methods for browsing the products, aswell as increasing and decreasing quantity.
 
 ## Product
- This class represents an product in the store inventory. The product values **name**, **price** and **quantity** are created and stored as class objects before then being added into the json file through the inventory methods.
+This class represents a product in the store inventory. The product values **name**, **price** and **quantity** are created and stored as class objects before then being added into the json file through the inventory methods.
 
 ## Basket
 This class simulates a shopping basket. It allows adding and removing products from the basket and calculates the total cost of the products in the basket.
