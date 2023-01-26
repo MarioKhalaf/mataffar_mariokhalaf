@@ -3,7 +3,6 @@ package mataffar_mariokhalaf;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -52,7 +51,7 @@ class Inventory {
         }
     }
     /**
-     * This method saves the products in the products list to the JSON file.
+     * This method Writes the products in the products list to the JSON file.
      */
     public void writeToJsonFile() {
         ObjectMapper objectMapper = new ObjectMapper();

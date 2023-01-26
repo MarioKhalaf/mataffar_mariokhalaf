@@ -18,17 +18,14 @@ class Basket{
     public Basket() {
         basket = new HashMap<>();
     }
-         /**
+    /**
      * Get the map representing the basket.
      * @return the map of products and their quantities thats inside the basket
      */
     public Map<Product, Integer> getBasket() {
         return basket;
     }
-
-    public void setBasket(Map<Product, Integer> basket) {
-        this.basket = basket;
-    }
+    // removes everything in the basket
     public void clearBasket() {
         basket.clear();
     }

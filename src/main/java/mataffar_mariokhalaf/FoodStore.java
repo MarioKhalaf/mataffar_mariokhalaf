@@ -8,7 +8,16 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * This class is the main one where everything runs through it using all the other classes.
+ */
 public class FoodStore {
+    /**
+     * The main method where the program begins.
+     * Contains a switch case menu for 8 different options to interact with user
+     * @param args
+     * @throws InterruptedException
+     */
     public static void main(String[] args) throws InterruptedException {
         Inventory inventory = new Inventory();
         Basket basket = new Basket();
@@ -156,7 +165,7 @@ public class FoodStore {
      * @param inventory instance of inventory class
      * @param basket instance of basket class
      * @param input Scanner to handle user inputs
-     * @throws InterruptedException
+     * @throws InterruptedException pauses program for better user interaction
      */
     private static void adjustBasket(Basket basket, Inventory inventory, Scanner input) throws InterruptedException {
         while (true) {
@@ -171,30 +180,30 @@ public class FoodStore {
             }
             System.out.println("Enter name of product: ");
             String name = input.next();
-            Product productName = inventory.getProductByName(name);
-            if (productName == null) {
+            Product product = inventory.getProductByName(name);
+            if (product == null) {
                 System.out.println("Product not found in inventory\n");
                 continue;
             }
             if (option.equals("3")) {
                 System.out.println("Enter amount you'd like to add: ");
                 int amount = input.nextInt();
-                if (amount > productName.getQuantity()) { // prevents user from entering number higher than whats in inventory
-                    System.out.println("There are only " + productName.getQuantity() + " " + name + " left in stock.\n");
+                if (amount > product.getQuantity()) { // prevents user from entering number higher than whats in inventory
+                    System.out.println("There are only " + product.getQuantity() + " " + name + " left in stock.\n");
                 } else {
-                    inventory.decreaseQuantity(productName, amount);
-                    String response = basket.addToBasket(productName, amount);
+                    inventory.decreaseQuantity(product, amount);
+                    String response = basket.addToBasket(product, amount);
                     System.out.println(response);
                 }
             } else if (option.equals("4")) {
                 System.out.println("Enter amount you'd like to remove: ");
                 int amount = input.nextInt();
-                int quantity = basket.getQuantity(productName);
+                int quantity = basket.getQuantity(product);
                 if (quantity - amount < 0) {
                     amount = quantity; // if amount is more than quantity, set amount equal to quantity to not become negative number
                 } 
-                String response = basket.removeFromBasket(productName, amount);
-                inventory.increaseQuantity(productName, amount);
+                String response = basket.removeFromBasket(product, amount);
+                inventory.increaseQuantity(product, amount);
                 System.out.println(response);
             }
         }
@@ -280,14 +289,14 @@ public class FoodStore {
      */
     private static void simulateFoodStore(Inventory inventory) throws InterruptedException {
         System.out.println("Simulation mode activated. Press any key to start.");
-        Thread[] threads = new Thread[3]; // Create an array of threads
-        for (int i = 0; i < 3; i++) {
+        Thread[] threads = new Thread[5]; // Create an array of threads
+        for (int i = 0; i < 5; i++) {
             // Create a new thread for each customer
             int id = i + 1;
             threads[i] = new Thread(() -> {
                 try {
                     // runs the method concurrently to simulate multiple customers at the same time shopping
-                    simulateSingleCustomer(id, inventory);
+                    simulateCustomer(id, inventory);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -300,8 +309,13 @@ public class FoodStore {
         }
         System.out.println("Simulation mode deactivated.");
     }
-    
-    private static void simulateSingleCustomer(int id, Inventory inventory) throws InterruptedException {
+    /**
+     * a method to simulate a customer shopping for the simulation mode
+     * @param id takes in id for each customer created
+     * @param inventory 
+     * @throws InterruptedException 
+     */
+    private static void simulateCustomer(int id, Inventory inventory) throws InterruptedException {
         Random rand = new Random();
         Basket customerBasket = new Basket(); // Creates a basket for each customer
         System.out.println("\nCustomer " + id + " has entered the store.");
@@ -311,19 +325,25 @@ public class FoodStore {
             if (product.getQuantity() == 0) {
                 System.out.println("\nCustomer " + id + ": God damn! These shit " + product.getName() + " are out of stock.");
                 continue;
+            } else {
+                int quantity = rand.nextInt(10);
+                customerBasket.addToBasket(product, quantity);
+                inventory.decreaseQuantity(product, quantity);
+                System.out.println("\nCustomer " + id + " has added " + quantity + " " + product.getName() + " to their basket.");
             }
-            int quantity = rand.nextInt(10);
-            customerBasket.addToBasket(product, quantity);
-            inventory.decreaseQuantity(product, quantity);
-            System.out.println("\nCustomer " + id + " has added " + quantity + " " + product.getName() + " to their basket.");
         }
         Order checkOut = new Order(customerBasket.getBasket(), customerBasket.getTotalCost());
         checkOut.writeOrderToJson();
-        System.out.println("\nCustomer " + id + " is finished and pays " + customerBasket.getTotalCost());
+        System.out.println("\nCustomer " + id + " is finished and pays $" + customerBasket.getTotalCost());
         customerBasket.clearBasket();
     }
 
-
+    /**
+     * a method to return a random product from the inventory to the simulator.
+     * @param inventory
+     * @param rand
+     * @return the random product.
+     */
     private static Product getRandomProduct(Inventory inventory, Random rand) {
         int randomIndex = rand.nextInt(inventory.getProducts().size());
         Product randomProduct = inventory.getProducts().get(randomIndex);
