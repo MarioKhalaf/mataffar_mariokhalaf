@@ -73,14 +73,14 @@ public class FoodStore {
      * @param inventory instance of inventory class
      * @param input Scanner to handle user inputs
      */
-    private static void insertProductToJsonFile(Inventory inventory, Scanner input) {
+    public static void insertProductToJsonFile(Inventory inventory, Scanner input) {
         System.out.println("Enter product name: ");
-        String pName = input.next();
+        String name = input.next();
         System.out.println("Enter product price: ");
         float price = input.nextFloat();
         System.out.println("Enter product quantity: ");
         int quantity = input.nextInt();
-        Product addProduct = new Product(pName, price, quantity);
+        Product addProduct = new Product(name, price, quantity);
         System.out.println(inventory.add(addProduct));
     }
     /**
@@ -88,7 +88,7 @@ public class FoodStore {
      * @param inventory instance of inventory class
      * @param input Scanner to handle user inputs
      */
-    private static void deleteProductFromJsonFile(Inventory inventory, Scanner input) {
+    public static void deleteProductFromJsonFile(Inventory inventory, Scanner input) {
         System.out.println("Enter the name of the product you want to remove: ");
         String name = input.next();
         Product product = inventory.getProductByName(name);
@@ -258,24 +258,27 @@ public class FoodStore {
      */
     private static void displayOrderHistory() {
         Order order = new Order();
+        // a list of maps containing string names and a second map which also contains the product name & quantity
         List<Map<String, Object>> orderHistory = order.readOrderHistoryFromJson();
         Collections.sort(orderHistory, new Comparator<Map<String, Object>>() {
-        @Override
+        @Override //use sort and comparator to sort the list in order of total price.
         public int compare(Map<String, Object> order1, Map<String, Object> order2) {
             double totalPrice1 = (double) order1.get("Total price");
             double totalPrice2 = (double) order2.get("Total price");
             return Double.compare(totalPrice2, totalPrice1);
-        }});
-        for(Map<String, Object> o : orderHistory) { 
+        }}); //since the map contains another map object , i needed a nested for loop to iterate through the second map
+        for(Map<String, Object> o : orderHistory) { //prints out each key and their respective values in the first map
             System.out.println("Products:");
-            for (Map.Entry<String, Object> entry : o.entrySet()) { 
-                if (entry.getKey().equals("Products")) {
-                    Map<String, Integer> products = (Map<String, Integer>) entry.getValue();
+            for (Map.Entry<String, Object> entry : o.entrySet()) {
+                if (entry.getKey().equals("Products")) { // if map key(String) is == to "Products"
+                    //extract the key(product name) and values(quantity) from the second map
+                    Map<String, Integer> products = (Map<String, Integer>) entry.getValue(); 
                     for (Map.Entry<String, Integer> product : products.entrySet()) {
+                        // print out the products and quantities
                         System.out.println("- " + product.getKey() + ": " + product.getValue());
                     }
                 }
-            }
+            } // prints out the other map objects from the second map.
             System.out.println("Date & time: " + o.get("Date & time"));
             System.out.println("Total price: " + o.get("Total price"));
             System.out.println();
@@ -304,6 +307,7 @@ public class FoodStore {
             threads[i].start(); // Start the thread
             Thread.sleep(1000);
         }
+        // join() to wait for the customer threads to finish executing before deactivating simulation mode.
         for (Thread t : threads) {
             t.join();
         }

@@ -101,11 +101,11 @@ class Inventory {
         return "Product does not exist in inventory.\n";
     }
     /**
-     * get List of all products in the basket
+     * a getter for List of all products in the basket
      * @return list of products
      */
     public List<Product> getProducts() {
-        return products;
+        return this.products;
     }
     /**
      * method iterates a string product name through the products list to match with the product class object

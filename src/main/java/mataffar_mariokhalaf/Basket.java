@@ -23,11 +23,11 @@ class Basket{
      * @return the map of products and their quantities thats inside the basket
      */
     public Map<Product, Integer> getBasket() {
-        return basket;
+        return this.basket;
     }
     // removes everything in the basket
     public void clearBasket() {
-        basket.clear();
+        this.basket.clear();
     }
     /**
      * a getter to return quantity for specific product
@@ -35,7 +35,7 @@ class Basket{
      * @return quantity
      */
     public int getQuantity(Product product) {
-        return basket.get(product);
+        return this.basket.get(product);
     }
 
     /**
@@ -71,7 +71,7 @@ class Basket{
                 return amount + " " + product.getName() + " removed from basket.\n";
             }
         }else {
-            return product.getName() + " is not in your basket.\n";
+            return product.getName() + " are not in your basket.\n";
         }
     }
      /**

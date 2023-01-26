@@ -6,11 +6,11 @@
   }, {
     "name" : "milk",
     "price" : 20.0,
-    "quantity" : 219
+    "quantity" : 209
   }, {
     "name" : "oranges",
     "price" : 50.69,
-    "quantity" : 81
+    "quantity" : 72
   }, {
     "name" : "bananas",
     "price" : 50.5,
@@ -18,7 +18,7 @@
   }, {
     "name" : "pasta",
     "price" : 40.99,
-    "quantity" : 107
+    "quantity" : 97
   }, {
     "name" : "onion",
     "price" : 40.29,
@@ -30,10 +30,14 @@
   }, {
     "name" : "sugar",
     "price" : 15.0,
-    "quantity" : 149
+    "quantity" : 132
   }, {
     "name" : "salt",
     "price" : 5.0,
-    "quantity" : 313
+    "quantity" : 300
+  }, {
+    "name" : "masdad",
+    "price" : 5.989999771118164,
+    "quantity" : 5
   } ]
 }

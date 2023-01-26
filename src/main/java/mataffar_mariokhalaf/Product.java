@@ -34,24 +34,24 @@ class Product {
         this.quantity = quantity;
     }
     /**
-     * Get name of product
+     * Getter for name of product
      * @return name of product
      */
     public String getName() {
-        return name;
+        return this.name;
     }
     /**
-     * Get price of certain product
+     * Getter for price of certain product
      * @return price of product
      */
     public double getPrice() {
-        return price;
+        return this.price;
     }
     /**
-     * get quantity of cetrain product in inventory
+     * getter for quantity of cetrain product
      * @return quantity of product
      */
     public int getQuantity() {
-        return quantity;
+        return this.quantity;
     }
 }

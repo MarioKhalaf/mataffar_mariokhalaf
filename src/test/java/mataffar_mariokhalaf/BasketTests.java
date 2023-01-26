@@ -1,8 +1,11 @@
 package mataffar_mariokhalaf;
 
+import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.Test;
+import static org.hamcrest.Matchers.*;
+
 
 class BasketTests {
 
@@ -30,7 +33,7 @@ class BasketTests {
     }
 
     @Test
-    public void shouldRemoveProductFromBasket() {
+    public void shouldRemoveCertainQuantityOfProductFromBasket() {
         // here i create a mock product object
         Product mockProduct = mock(Product.class);
         Basket mockBasket = mock(Basket.class);
@@ -41,4 +44,42 @@ class BasketTests {
         verify(mockBasket).removeFromBasket(mockProduct, 5);
     }
 
+    @Test
+    public void shouldRemoveProductFromBasketIfAmountIsEqualOrGreaterThanProductQuantity() {
+        Basket basket = new Basket();
+        Product product1 = new Product("apples", 0.99, 10);
+        Product product2 = new Product("oranges", 0.99, 10);
+        basket.addToBasket(product1, 5);
+        basket.addToBasket(product2, 8);
+        assertSame(5, basket.getQuantity(product1));
+        String result1 = basket.removeFromBasket(product1, 6);
+        String result2 = basket.removeFromBasket(product2, 8);
+        assertEquals("You put back all the apples\n", result1);
+        assertEquals("You put back all the oranges\n", result2);
+    }
+
+    @Test
+    public void shouldNotBeAbleToRemoveNoneExistenProduct(){
+        Product product1 = new Product("oranges", 0.99, 10);
+        Product product2 = new Product("apples", 0.99, 10);
+        Basket basket = new Basket();
+        basket.addToBasket(product1, 5);
+        String result = basket.removeFromBasket(product2, 0);
+        assertEquals("apples are not in your basket.\n", result);
+    }
+
+    @Test
+    public void shouldReturnCorrectTotalCostHamcrest() {
+        Product product1 = new Product("apples", 5.99, 10);
+        Product product2 = new Product("oranges", 1.99, 5);
+        Product product3 = new Product("bananas", 3.49, 7);
+        Basket basket = new Basket();
+        basket.addToBasket(product1, 2);
+        basket.addToBasket(product2, 3);
+        basket.addToBasket(product3, 4);
+        double totalCost = basket.getTotalCost();
+        double expectedTotalCost = (5.99 * 2) + (1.99 * 3) + (3.49 * 4);
+        assertThat(totalCost, is(equalTo(expectedTotalCost)));
+        assertThat(3, is(equalTo(basket.getBasket().size())));
+    }
 }
