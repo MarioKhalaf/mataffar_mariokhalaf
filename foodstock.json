@@ -1,43 +1,39 @@
 {
   "Products" : [ {
     "name" : "apples",
-    "price" : 30.0,
-    "quantity" : 6
+    "price" : 5.99,
+    "quantity" : 996
   }, {
     "name" : "milk",
     "price" : 20.0,
-    "quantity" : 21
+    "quantity" : 219
   }, {
     "name" : "oranges",
     "price" : 50.69,
-    "quantity" : 45
+    "quantity" : 81
   }, {
     "name" : "bananas",
     "price" : 50.5,
-    "quantity" : 1
+    "quantity" : 0
   }, {
     "name" : "pasta",
     "price" : 40.99,
-    "quantity" : 0
+    "quantity" : 107
   }, {
     "name" : "onion",
     "price" : 40.29,
-    "quantity" : 0
+    "quantity" : 61
   }, {
     "name" : "potatoes",
     "price" : 5.39,
-    "quantity" : 8
+    "quantity" : 82
   }, {
     "name" : "sugar",
     "price" : 15.0,
-    "quantity" : 10
+    "quantity" : 149
   }, {
     "name" : "salt",
     "price" : 5.0,
-    "quantity" : 20
-  }, {
-    "name" : "cookies",
-    "price" : 0.99,
-    "quantity" : 10
+    "quantity" : 313
   } ]
 }
