@@ -41,7 +41,11 @@ Examples from each lesson.
 
 [Extracting from HashMap](https://stackoverflow.com/questions/16246821/how-to-get-values-and-keys-from-hashmap)
 
-[sort and comparator](https://www.geeksforgeeks.org/collections-sort-java-examples/)
+[Sort and comparator](https://www.geeksforgeeks.org/collections-sort-java-examples/)
+
+[Mockito tests](https://www.youtube.com/watch?v=MYOQBP3SlwQ)
+
+[Mockito tests](https://www.youtube.com/watch?v=rLXLApFgzSw&t=228s)
 
 [Entry to extract map key and value](https://stackoverflow.com/questions/5911174/finding-key-associated-with-max-value-in-a-java-map)
 
