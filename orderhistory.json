@@ -84,4 +84,43 @@
   },
   "Date & time" : "2023-01-26 - 11:16:12",
   "Total price" : 400.34000000000003
+}, {
+  "Products" : {
+    "salt" : 4,
+    "pasta" : 5,
+    "sugar" : 2
+  },
+  "Date & time" : "2023-01-26 - 19:28:35",
+  "Total price" : 254.95000000000002
+}, {
+  "Products" : {
+    "oranges" : 2,
+    "salt" : 8,
+    "apples" : 1
+  },
+  "Date & time" : "2023-01-26 - 19:28:37",
+  "Total price" : 147.37
+}, {
+  "Products" : {
+    "oranges" : 2,
+    "onion" : 4,
+    "sugar" : 3
+  },
+  "Date & time" : "2023-01-26 - 19:28:39",
+  "Total price" : 307.53999999999996
+}, {
+  "Products" : {
+    "potatoes" : 2,
+    "salt" : 2
+  },
+  "Date & time" : "2023-01-26 - 19:28:41",
+  "Total price" : 20.78
+}, {
+  "Products" : {
+    "onion" : 3,
+    "pasta" : 3,
+    "sugar" : 9
+  },
+  "Date & time" : "2023-01-26 - 19:28:41",
+  "Total price" : 378.84000000000003
 } ]

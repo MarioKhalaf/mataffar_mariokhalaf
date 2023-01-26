@@ -87,5 +87,4 @@ public class FoodStoreTests {
         verify(mockInventory, never()).increaseQuantity(any(Product.class), anyInt());
     }
 
-  
 }

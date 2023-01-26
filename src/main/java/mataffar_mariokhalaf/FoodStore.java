@@ -16,7 +16,6 @@ public class FoodStore {
     /**
      * The main method where the program begins.
      * Contains a switch case menu for 8 different options to interact with user
-     * 
      * @param args
      * @throws InterruptedException
      */
@@ -74,7 +73,6 @@ public class FoodStore {
      * method to input product name, price & quantity to create a new instance of
      * the Product class & save it to a varable addProduct
      * sends addProduct var as argument to the inventory.add methood
-     * 
      * @param inventory instance of inventory class
      * @param input     Scanner to handle user inputs
      */
@@ -91,7 +89,6 @@ public class FoodStore {
 
     /**
      * method to remove products in inventory by user input of name
-     * 
      * @param inventory instance of inventory class
      * @param input     Scanner to handle user inputs
      */
@@ -110,8 +107,7 @@ public class FoodStore {
      * @param inventory instance of inventory class
      * @param basket    instance of basket class
      * @param input     Scanner to handle user inputs
-     * @throws InterruptedException using Thread.sleep to pause the program for a
-     *                              few seconds.
+     * @throws InterruptedException using Thread.sleep to pause the program for a few seconds.
      */
     public static void groceryShopping(Inventory inventory, Basket basket, Scanner input) throws InterruptedException {
         System.out.println("\nWelcome to the Food Store\nAdd products to your basket by entering its name.");
@@ -144,7 +140,6 @@ public class FoodStore {
     /**
      * method that displays all products inside json file by looping through and
      * printing out.
-     * 
      * @param inventory instance of class
      */
     private static void displayGroceries(Inventory inventory) {
@@ -155,12 +150,9 @@ public class FoodStore {
             System.out.printf("%-8s | %-6d | %-8.2f\n", p.getName(), p.getQuantity(), p.getPrice());
         }
     }
-
     /**
      * method to display all products inside the customer basket
-     * prints out products inside map using entryset to get keys(product name) and
-     * values(quantity)
-     * 
+     * prints out products inside map using entryset to get keys(product name) and values(quantity)
      * @param basket instance of basket class.
      */
     public static void displayBasket(Basket basket) {
@@ -174,12 +166,9 @@ public class FoodStore {
         double totalCost = basket.getTotalCost();
         System.out.println("\nTotal cost: $" + totalCost + "\n");
     }
-
     /**
      * method to adjust the contents of the basket.
-     * you can add and remove quantity from each product in the basket to ur
-     * specific needs.
-     * 
+     * you can add and remove quantity from each product in the basket to ur specific needs.
      * @param inventory instance of inventory class
      * @param basket    instance of basket class
      * @param input     Scanner to handle user inputs
@@ -228,10 +217,8 @@ public class FoodStore {
             }
         }
     }
-
     /**
      * method to refill the foodstore stock by ordering more of each product.
-     * 
      * @param inventory instance of inventory class
      * @param input     Scanner to handle user inputs
      * @throws InterruptedException sleep mode for a fun interaction with user
@@ -256,13 +243,11 @@ public class FoodStore {
             System.out.println(inventory.increaseQuantity(productName, quantity));
         }
     }
-
     /**
      * method to checkout all curent produts inside the basket and saving it to
      * orderhistory.json.
      * sends all basket contents and total cost of it to Order class to save it in
      * json.
-     * 
      * @param basket   instance of basket class.
      * @param customer
      * @param input    Scanner to handle user inputs
@@ -280,8 +265,7 @@ public class FoodStore {
     }
 
     /**
-     * method to display all Orders from orderhistory.json in by sorting it in order
-     * of total cost.
+     * method to display all Orders from orderhistory.json in by sorting it in order of total cost.
      * uses comparator and sort() to compare each content inside the list of maps in
      * order of highest total cost.
      */
@@ -320,10 +304,8 @@ public class FoodStore {
     /**
      * A simulator that creates a set amount of customers shopping for groceries
      * By using threads to run the customers concurrently instead of 1 by 1.
-     * 
      * @param inventory instance of inventory class
-     * @throws InterruptedException to help slow down to read whats happening in the
-     *                              simulator.
+     * @throws InterruptedException to help slow down to read whats happening in the simulator.
      */
     private static void simulateFoodStore(Inventory inventory) throws InterruptedException {
         System.out.println("Simulation mode activated.");
@@ -353,8 +335,7 @@ public class FoodStore {
 
     /**
      * a method to simulate a customer shopping for the simulation mode
-     * 
-     * @param id        takes in id for each customer created
+     * @param id takes in id for each customer created
      * @param inventory
      * @throws InterruptedException
      */
@@ -382,10 +363,8 @@ public class FoodStore {
         System.out.println("\nCustomer " + id + " pays $" + customerBasket.getTotalCost() + " and exits the store.");
         customerBasket.clearBasket();
     }
-
     /**
      * a method to return a random product from the inventory to the simulator.
-     * 
      * @param inventory
      * @param rand
      * @return the random product.
