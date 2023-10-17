@@ -13,32 +13,32 @@
     {
       "name": "oranges",
       "price": 50.69,
-      "quantity": 1
+      "quantity": 500
     },
     {
       "name": "bananas",
       "price": 50.5,
-      "quantity": 0
+      "quantity": 500
     },
     {
       "name": "pasta",
       "price": 40.99,
-      "quantity": 50
+      "quantity": 500
     },
     {
       "name": "onion",
       "price": 40.29,
-      "quantity": 1
+      "quantity": 1000
     },
     {
       "name": "potatoes",
       "price": 5.39,
-      "quantity": 30
+      "quantity": 3000
     },
     {
       "name": "sugar",
       "price": 15.0,
-      "quantity": 60
+      "quantity": 600
     },
     {
       "name": "salt",
